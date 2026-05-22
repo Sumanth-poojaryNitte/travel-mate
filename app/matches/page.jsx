@@ -1,8 +1,11 @@
+"use client"
 import Navbar from "../components/Navbar";
 import MatchCard from "../components/MatchCard";
 import Footer from "../components/Footer";
+import { useSearchParams} from "next/navigation";
+import { useState } from "react";
 
-export default function Matches() {
+
 
   const users = [
     {
@@ -70,18 +73,51 @@ export default function Matches() {
     },
     
   ];
+  export default function Matches() {
+  const [Search,setSearch]=useState("");
+  const SearchParams = useSearchParams();
+  const queryFrom =SearchParams.get("from")?.toLowerCase() || "";
+  const queryTo = SearchParams.get("to")?.toLowerCase() || "";
+  
+ 
+
+  const filteredUsers = users.filter((user) => {
+  const TextInput = Search.toLowerCase();
+
+  const matchsSearchInput =
+    user.from.toLowerCase().includes(TextInput) ||
+    user.to.toLowerCase().includes(TextInput) ||
+    user.name.toLowerCase().includes(TextInput);
+
+    const matchesQueryFrom = queryFrom ? user.from.toLowerCase().includes(queryFrom):true;
+  const matchesQueryTo = queryTo ? user.to.toLowerCase().includes(queryTo):true;
+  return matchsSearchInput && matchesQueryFrom && matchesQueryTo;
+  });
+
 
   return (
-    <main className="min-h-screen bg-gray-100">
+     
+    <main className="min-h-screen bg-gray-100 text-black">
       <Navbar />
 
       <div className="p-6">
         <h1 className="text-3xl font-bold mb-6 text-blue-600">
-          here to saveee
+          Available Matches
         </h1>
+        <input type="text"
+  placeholder="Search place or name..."
+  value={Search}
+  onChange={(e) => setSearch(e.target.value)}
+  className="border p-2 w-full mb-4 rounded text-black border-gray-300 focus:outline-blue-500"
+/>
+<div className="grid gap-4">
 
-        <div className="grid gap-4">
-          {users.map((user) => (
+          {filteredUsers.length > 0 ? (
+            filteredUsers.map((user) => (
+              
+        
+
+        
             <MatchCard
               key={user.id}
               name={user.name}
@@ -92,10 +128,16 @@ export default function Matches() {
               email={user.email}
               image={user.image}
             />
-          ))}
+            ))
+          ) : (
+            <p className="text-gray-500 col-span-full text-center py-8"> 
+            no matches found
+          </p>
+            
+          )}
         </div>
       </div>
       <Footer/>
     </main>
   );
-}
+  }
