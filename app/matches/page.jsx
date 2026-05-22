@@ -3,7 +3,7 @@ import Navbar from "../components/Navbar";
 import MatchCard from "../components/MatchCard";
 import Footer from "../components/Footer";
 import { useSearchParams} from "next/navigation";
-import { useState } from "react";
+import { useState,Suspense } from "react";
 
 
 
@@ -73,7 +73,7 @@ import { useState } from "react";
     },
     
   ];
-  export default function Matches() {
+  function MatchesContent() {
   const [Search,setSearch]=useState("");
   const SearchParams = useSearchParams();
   const queryFrom =SearchParams.get("from")?.toLowerCase() || "";
@@ -96,9 +96,10 @@ import { useState } from "react";
 
 
   return (
-     
+    <div className="wrapper-div">
+     <Navbar />
     <main className="min-h-screen bg-gray-100 text-black">
-      <Navbar />
+      
 
       <div className="p-6">
         <h1 className="text-3xl font-bold mb-6 text-blue-600">
@@ -137,7 +138,20 @@ import { useState } from "react";
           )}
         </div>
       </div>
-      <Footer/>
+      
     </main>
+    <footer />
+    </div>
   );
   }
+  export default function Matches() {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen bg-gray-100 text-black flex items-center justify-center">
+        <p className="text-xl font-semibold">Loading matches...</p>
+      </div>
+    }>
+      <MatchesContent />
+    </Suspense>
+  );
+}
