@@ -74,9 +74,9 @@ const [image, setImage] = useState(null);
       </h2>
 
       <form
-        onSubmit={handleSubmit}>
+        onSubmit={handleSubmit}
         
-        className="flex flex-col gap-4"
+        className="flex flex-col gap-4">
       
 
         <input
