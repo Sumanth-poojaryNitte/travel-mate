@@ -42,7 +42,7 @@ const [image, setImage] = useState(null);
   formData.append("image", image);
 
   const response = await fetch(
-    "https://travelmate-backend-t0hu.onrender.com/api/trips/upload",
+    "https://travel-mate-r3lv.onrender.com/api/trips/upload",
     {
       method: "POST",
       body: formData,
