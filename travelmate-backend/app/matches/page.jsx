@@ -17,7 +17,7 @@ import { useState,useEffect,Suspense } from "react";
 
 
   useEffect(() => {
-  fetch("https://travelmate-backend-t0hu.onrender.com/api/trips/all")
+  fetch("http://localhost:8083/api/trips/all")
     .then((response) => response.json())
     .then((data) => setUsers(data))
     .catch((error) => console.error("Error:", error));
@@ -71,7 +71,7 @@ import { useState,useEffect,Suspense } from "react";
               date={user.date}
               mobile={user.mobile}
               email={user.mail}
-              image={user.image ? `https://travelmate-backend-t0hu.onrender.com/uploads/${user.image}`: null}
+              image={user.image ? `http://localhost:8083/uploads/${user.image}`: null}
             />
             ))
           ) : (

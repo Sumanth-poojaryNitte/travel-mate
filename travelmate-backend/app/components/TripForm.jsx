@@ -42,7 +42,7 @@ const [image, setImage] = useState(null);
   formData.append("image", image);
 
   const response = await fetch(
-    "https://travelmate-backend-t0hu.onrender.com/api/trips/upload",
+    "http://localhost:8083/api/trips/upload",
     {
       method: "POST",
       body: formData,
@@ -74,10 +74,9 @@ const [image, setImage] = useState(null);
       </h2>
 
       <form
-        onSubmit={handleSubmit}>
-        
+        onSubmit={handleSubmit}
         className="flex flex-col gap-4"
-      
+      >
 
         <input
           type="text"
@@ -135,7 +134,7 @@ const [image, setImage] = useState(null);
        
         <button
           type="submit"
-           className="bg-blue-600 text-white p-2 rounded hover:bg-blue-700"
+           className="bg-blue-600 text-white p-2 rounded"
         >
           Add Trip
         </button>
