@@ -17,9 +17,9 @@ export default function MatchCard({
   return (
     <div className="bg-white text-black border p-6 rounded-xl shadow-md">
       <img
-      src={image}
+      src={image || "/default.png"}
       alt={name}
-      className="w-24 h-24 rounded full object-cover mb-4"
+      className="w-24 h-24 rounded-full object-cover mb-4"
       />
 
       <h2 className="text-2xl font-bold text-blue-600">

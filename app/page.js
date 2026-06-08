@@ -1,6 +1,6 @@
 import Navbar from "./components/Navbar";
 import TripForm from "./components/TripForm";
-import footer from "./components/Footer";
+import Footer from "./components/Footer";
 
 export default function Home() {
   return (
@@ -21,7 +21,7 @@ export default function Home() {
         <TripForm />
 
       </div>
-      <footer />
+      <Footer />
 
     </main>
   );

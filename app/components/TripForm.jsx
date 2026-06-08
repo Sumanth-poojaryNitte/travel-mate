@@ -7,23 +7,63 @@ export default function TripForm() {
 
   const router = useRouter();
 
-  const [from, setFrom] = useState("");
-  const [to, setTo] = useState("");
+ const [name, setName] = useState("");
+const [mobile, setMobile] = useState("");
+const [mail, setMail] = useState("");
+const [fromLocation, setFromLocation] = useState("");
+const [toLocation, setToLocation] = useState("");
+const [date, setDate] = useState("");
+const [image, setImage] = useState(null);
 
-  const handleSubmit = (e) => {
+ const handleSubmit = async (e) => {
   e.preventDefault();
 
-  if (!from.trim() || !to.trim()) {
-  alert("Please fill all fields");
-  return;
-}
+  if (
+    !name ||
+    !mobile ||
+    !mail ||
+    !fromLocation ||
+    !toLocation ||
+    !date ||
+    !image
+  ) {
+    alert("Please fill all fields and select an image");
+    return;
+  }
 
-if (to.length !== 10) {
-  alert("Mobile number must be 10 digits");
-  return;
-}
+  const formData = new FormData();
 
-  router.push(`/matches?from=${from}&to=${to}`);
+  formData.append("name", name);
+  formData.append("mobile", mobile);
+  formData.append("mail", mail);
+  formData.append("fromLocation", fromLocation);
+  formData.append("toLocation", toLocation);
+  formData.append("date", date);
+  formData.append("image", image);
+
+  const response = await fetch(
+    "http://localhost:8083/api/trips/upload",
+    {
+      method: "POST",
+      body: formData,
+    }
+  );
+
+  if (response.ok) {
+    alert("Trip added successfully!");
+
+    setName("");
+    setMobile("");
+    setMail("");
+    setFromLocation("");
+    setToLocation("");
+    setDate("");
+    setImage(null);
+
+    router.push("/matches");
+  } else {
+    alert("Failed to add trip");
+  }
 };
 
   return (
@@ -40,25 +80,63 @@ if (to.length !== 10) {
 
         <input
           type="text"
-          placeholder="NAME"
-          value={from}
-          onChange={(e) => setFrom(e.target.value)}
+          placeholder="Name"
+          value={name}
+          onChange={(e) => setName(e.target.value)}
           className="border p-2 rounded"
         />
 
         <input
           type="tel"
-          placeholder="MOBILE NUMBER"
-          value={to}
-          onChange={(e) => setTo(e.target.value)}
+          placeholder="Mobile Number"
+          value={mobile}
+          onChange={(e) => setMobile(e.target.value)}
           className="border p-2 rounded"
         />
+
+        <input
+          type="email"
+          placeholder="Email"
+          value={mail}
+          onChange={(e) => setMail(e.target.value)}
+          className="border p-2 rounded"
+        />
+
+        <input
+          type="text"
+          placeholder="From Location"
+          value={fromLocation}
+          onChange={(e) => setFromLocation(e.target.value)}
+          className="border p-2 rounded"
+        />
+
+        <input
+          type="text"
+          placeholder="To Location"
+          value={toLocation}
+          onChange={(e) => setToLocation(e.target.value)}
+          className="border p-2 rounded"
+        />
+
+        <input
+          type="date"
+          value={date}
+          onChange={(e) => setDate(e.target.value)}
+          className="border p-2 rounded"
+        />
+        <input
+           type="file"
+           accept="image/*"
+          onChange={(e) => setImage(e.target.files[0])}
+          className="border p-2 rounded"
+        />
+        
        
         <button
           type="submit"
            className="bg-blue-600 text-white p-2 rounded"
         >
-          Search
+          Add Trip
         </button>
 
       </form>

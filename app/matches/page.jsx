@@ -3,81 +3,25 @@ import Navbar from "../components/Navbar";
 import MatchCard from "../components/MatchCard";
 import Footer from "../components/Footer";
 import { useSearchParams} from "next/navigation";
-import { useState,Suspense } from "react";
+import { useState,useEffect,Suspense } from "react";
 
 
 
-  const users = [
-    {
-    id:1,
-      name: "Rahul",
-      from: "Bangalore",
-      to: "Mysore",
-      date:"22-05-2026",
-      mobile: "1234543456",
-      email: "rahum555@gmail.com",
-      image:
-     "images/WhatsApp Image 2026-05-21 at 2.11.23 PM (2).jpeg"
-    },
-    {
-      id:2,
-      name: "Anjali",
-      from: "Bangalore",
-      to: "Mysore",
-      date:"24-05-2026",
-      mobile: "8904165423",
-      email: "anjali555@gmail.com",
-      image:"images/WhatsApp Image 2026-05-21 at 2.11.22 PM (1).jpeg"
-    },
-    {
-      id:3,
-      name: "sam",
-      from: "Nitte",
-      to: "Karkala",
-      date:"25-05-2026",
-      mobile: "9876543765",
-      email: "sam555@gmail.com",
-      image:"images/WhatsApp Image 2026-05-21 at 2.11.23 PM (1).jpeg"
-    },
-    {
-      id:4,
-      name: "sush",
-      from: "Nitte",
-      to: "Karkala",
-      date:"25-05-2026",
-      mobile: "1234523455",
-      email: "sush555@gmail.com",
-      image:"images/WhatsApp Image 2026-05-21 at 2.11.22 PM.jpeg"
-      
-      
-    },
-    {
-      id:5,
-      name: "vaish",
-      from: "Mysoor",
-      to: "Nitte",
-      date:"29-05-2026",
-      mobile: "890416743",
-      email: "vaish555@gmail.com",
-      image:"images/WhatsApp Image 2026-05-21 at 2.11.23 PM.jpeg"
-    },
-    {
-      id:6,
-      name: "sumanth",
-      from: "Mysore",
-      to: "Nitte",
-      date:"30-05-2026",
-      mobile: "8904162988",
-      email: "sumanth555@gmail.com",
-      image:"images/WhatsApp Image 2026-05-21 at 2.11.24 PM.jpeg"
-    },
-    
-  ];
+  
   function MatchesContent() {
   const [Search,setSearch]=useState("");
+  const [users, setUsers]=useState([]);
   const SearchParams = useSearchParams();
   const queryFrom =SearchParams.get("from")?.toLowerCase() || "";
   const queryTo = SearchParams.get("to")?.toLowerCase() || "";
+
+
+  useEffect(() => {
+  fetch("http://localhost:8083/api/trips/all")
+    .then((response) => response.json())
+    .then((data) => setUsers(data))
+    .catch((error) => console.error("Error:", error));
+}, []);
   
  
 
@@ -85,12 +29,12 @@ import { useState,Suspense } from "react";
   const TextInput = Search.toLowerCase();
 
   const matchsSearchInput =
-    user.from.toLowerCase().includes(TextInput) ||
-    user.to.toLowerCase().includes(TextInput) ||
-    user.name.toLowerCase().includes(TextInput);
+    (user.fromLocation||"").toLowerCase().includes(TextInput) ||
+    (user.toLocation||"").toLowerCase().includes(TextInput) ||
+    (user.name||"").toLowerCase().includes(TextInput);
 
-    const matchesQueryFrom = queryFrom ? user.from.toLowerCase().includes(queryFrom):true;
-  const matchesQueryTo = queryTo ? user.to.toLowerCase().includes(queryTo):true;
+    const matchesQueryFrom = queryFrom ? user.fromLocation?.toLowerCase().includes(queryFrom):true;
+  const matchesQueryTo = queryTo ? user.toLocation?.toLowerCase().includes(queryTo):true;
   return matchsSearchInput && matchesQueryFrom && matchesQueryTo;
   });
 
@@ -122,12 +66,12 @@ import { useState,Suspense } from "react";
             <MatchCard
               key={user.id}
               name={user.name}
-              from={user.from}
-              to={user.to}
+              from={user.fromLocation}
+              to={user.toLocation}
               date={user.date}
               mobile={user.mobile}
-              email={user.email}
-              image={user.image}
+              email={user.mail}
+              image={user.image ? `http://localhost:8083/uploads/${user.image}`: null}
             />
             ))
           ) : (
@@ -140,7 +84,7 @@ import { useState,Suspense } from "react";
       </div>
       
     </main>
-    <footer />
+    <Footer />
     </div>
   );
   }
