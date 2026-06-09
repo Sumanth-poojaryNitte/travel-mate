@@ -92,3 +92,4 @@ public UserTrip uploadTrip(
 
     return userTripRepository.save(trip);
 }
+}
