@@ -26,9 +26,9 @@ public class SecurityConfig {
                         "/api/trips/**",
                         "/uploads/**"
                 ).permitAll()
-                .anyRequest().permitAll()   // 🔥 IMPORTANT CHANGE
+                .anyRequest().permitAll()   
             )
-            .httpBasic(httpBasic -> httpBasic.disable())  // 🔥 IMPORTANT
+            .httpBasic(httpBasic -> httpBasic.disable())  
             .formLogin(form -> form.disable());
 
         return http.build();

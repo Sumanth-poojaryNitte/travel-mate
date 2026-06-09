@@ -23,11 +23,12 @@ public class SecurityConfig {
             .authorizeHttpRequests(auth -> auth
                 .requestMatchers(
                         "/api/auth/**",
-                        "/api/trips/**"
+                        "/api/trips/**",
+                        "/uploads/**"
                 ).permitAll()
-                .anyRequest().permitAll()   
+                .anyRequest().permitAll()   // 🔥 IMPORTANT CHANGE
             )
-            .httpBasic(httpBasic -> httpBasic.disable())  
+            .httpBasic(httpBasic -> httpBasic.disable())  // 🔥 IMPORTANT
             .formLogin(form -> form.disable());
 
         return http.build();
