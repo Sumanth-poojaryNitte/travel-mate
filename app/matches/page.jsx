@@ -4,6 +4,7 @@ import MatchCard from "../components/MatchCard";
 import Footer from "../components/Footer";
 import { useSearchParams} from "next/navigation";
 import { useState,useEffect,Suspense } from "react";
+import ServerWakeup from "../components/ServerWakeup";
 
 
 
@@ -95,7 +96,9 @@ import { useState,useEffect,Suspense } from "react";
         <p className="text-xl font-semibold">Loading matches...</p>
       </div>
     }>
+      <ServerWakeup>
       <MatchesContent />
+      </ServerWakeup>
     </Suspense>
   );
 }
