@@ -44,7 +44,7 @@ export default function TripForm() {
       formData.append("image", image);
 
       const response = await fetch(
-        "https://travel-mate-r3lv.onrender.com/api/trips/upload",
+        "https://travelmate-backend-t0hu.onrender.com/api/trips/upload",
         {
           method: "POST",
           body: formData,

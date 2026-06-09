@@ -1,15 +1,15 @@
 package com.travelmate.controller;
 
-import com.cloudinary.Cloudinary;
-import com.cloudinary.utils.ObjectUtils;
 import com.travelmate.model.UserTrip;
 import com.travelmate.repository.UserTripRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
-import java.util.Map;
+import org.springframework.web.multipart.MultipartFile;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
 @RestController
 @RequestMapping("/api/trips")
@@ -18,9 +18,6 @@ public class UserTripController {
 
     @Autowired
     private UserTripRepository userTripRepository;
-
-    @Autowired
-    private Cloudinary cloudinary;
 
     @GetMapping("/test")
     public String test() {
@@ -36,18 +33,17 @@ public class UserTripController {
     public List<UserTrip> getAllTrips() {
         return userTripRepository.findAll();
     }
-
     @GetMapping("/search")
     public List<UserTrip> searchTrips(
-            @RequestParam String from,
-            @RequestParam String to) {
+        @RequestParam String from,
+        @RequestParam String to) {
 
-        return userTripRepository
-                .findByFromLocationContainingIgnoreCaseAndToLocationContainingIgnoreCase(
-                        from,
-                        to
-                );
-    }
+    return userTripRepository
+            .findByFromLocationContainingIgnoreCaseAndToLocationContainingIgnoreCase(
+                    from,
+                    to
+            );
+}
 
     @GetMapping("/{id}")
     public UserTrip getTripById(@PathVariable Long id) {
@@ -59,7 +55,6 @@ public class UserTripController {
         userTripRepository.deleteById(id);
         return "Trip deleted successfully!";
     }
-
     @PostMapping("/upload")
 public UserTrip uploadTrip(
         @RequestParam String name,
@@ -68,8 +63,22 @@ public UserTrip uploadTrip(
         @RequestParam String fromLocation,
         @RequestParam String toLocation,
         @RequestParam String date,
-        @RequestParam(required = false) MultipartFile image
+        @RequestParam MultipartFile image
 ) throws Exception {
+
+    String fileName = System.currentTimeMillis()
+            + "_" + image.getOriginalFilename();
+
+    Path uploadPath = Paths.get("uploads");
+
+    if (!Files.exists(uploadPath)) {
+        Files.createDirectories(uploadPath);
+    }
+
+    Files.copy(
+            image.getInputStream(),
+            uploadPath.resolve(fileName)
+    );
 
     UserTrip trip = new UserTrip();
 
@@ -80,15 +89,7 @@ public UserTrip uploadTrip(
     trip.setToLocation(toLocation);
     trip.setDate(date);
 
-    if (image != null && !image.isEmpty()) {
-
-        Map uploadResult = cloudinary.uploader().upload(
-                image.getBytes(),
-                ObjectUtils.emptyMap()
-        );
-
-        trip.setImage(uploadResult.get("secure_url").toString());
-    }
+    trip.setImage(fileName);
 
     return userTripRepository.save(trip);
 }

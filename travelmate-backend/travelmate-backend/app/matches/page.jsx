@@ -18,7 +18,7 @@ import ServerWakeup from "../components/ServerWakeup";
 
 
   useEffect(() => {
-  fetch("https://travel-mate-r3lv.onrender.com/api/trips/all")
+  fetch("https://travelmate-backend-t0hu.onrender.com/api/trips/all")
     .then((response) => response.json())
     .then((data) => setUsers(data))
     .catch((error) => console.error("Error:", error));
@@ -72,7 +72,7 @@ import ServerWakeup from "../components/ServerWakeup";
               date={user.date}
               mobile={user.mobile}
               email={user.mail}
-              image={user.image ? `https://travel-mate-r3lv.onrender.com/uploads/${user.image}`: null}
+              image={user.image || null}
             />
             ))
           ) : (
