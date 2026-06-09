@@ -4,80 +4,83 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 
 export default function TripForm() {
-
   const router = useRouter();
 
- const [name, setName] = useState("");
-const [mobile, setMobile] = useState("");
-const [mail, setMail] = useState("");
-const [fromLocation, setFromLocation] = useState("");
-const [toLocation, setToLocation] = useState("");
-const [date, setDate] = useState("");
-const [image, setImage] = useState(null);
+  const [name, setName] = useState("");
+  const [mobile, setMobile] = useState("");
+  const [mail, setMail] = useState("");
+  const [fromLocation, setFromLocation] = useState("");
+  const [toLocation, setToLocation] = useState("");
+  const [date, setDate] = useState("");
+  const [image, setImage] = useState(null);
+  const [loading, setLoading] = useState(false);
 
- const handleSubmit = async (e) => {
-  e.preventDefault();
+  const handleSubmit = async (e) => {
+    e.preventDefault();
 
-  if (
-    !name ||
-    !mobile ||
-    !mail ||
-    !fromLocation ||
-    !toLocation ||
-    !date ||
-    !image
-  ) {
-    alert("Please fill all fields and select an image");
-    return;
-  }
-
-  const formData = new FormData();
-
-  formData.append("name", name);
-  formData.append("mobile", mobile);
-  formData.append("mail", mail);
-  formData.append("fromLocation", fromLocation);
-  formData.append("toLocation", toLocation);
-  formData.append("date", date);
-  formData.append("image", image);
-
-  const response = await fetch(
-    "https://travel-mate-r3lv.onrender.com/api/trips/upload",
-    {
-      method: "POST",
-      body: formData,
+    if (
+      !name ||
+      !mobile ||
+      !mail ||
+      !fromLocation ||
+      !toLocation ||
+      !date ||
+      !image
+    ) {
+      alert("Please fill all fields and select an image");
+      return;
     }
-  );
 
-  if (response.ok) {
-    alert("Trip added successfully!");
+    try {
+      setLoading(true);
 
-    setName("");
-    setMobile("");
-    setMail("");
-    setFromLocation("");
-    setToLocation("");
-    setDate("");
-    setImage(null);
+      const formData = new FormData();
+      formData.append("name", name);
+      formData.append("mobile", mobile);
+      formData.append("mail", mail);
+      formData.append("fromLocation", fromLocation);
+      formData.append("toLocation", toLocation);
+      formData.append("date", date);
+      formData.append("image", image);
 
-    router.push("/matches");
-  } else {
-    alert("Failed to add trip");
-  }
-};
+      const response = await fetch(
+        "https://travel-mate-r3lv.onrender.com/api/trips/upload",
+        {
+          method: "POST",
+          body: formData,
+        }
+      );
+
+      if (response.ok) {
+        alert("Trip added successfully!");
+
+        setName("");
+        setMobile("");
+        setMail("");
+        setFromLocation("");
+        setToLocation("");
+        setDate("");
+        setImage(null);
+
+        router.push("/matches");
+      } else {
+        alert("Failed to add trip");
+      }
+    } catch (error) {
+      console.error("Error:", error);
+      alert("Server error. Please try again later.");
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <div className="bg-white shadow-md rounded-lg p-6 mt-6 text-black">
-
       <h2 className="text-2xl font-bold mb-4 text-blue-600">
         Find Travel Partners
       </h2>
 
-      <form
-        onSubmit={handleSubmit}
-        
-        className="flex flex-col gap-4">
-      
+      <form onSubmit={handleSubmit} className="flex flex-col gap-4">
 
         <input
           type="text"
@@ -125,23 +128,22 @@ const [image, setImage] = useState(null);
           onChange={(e) => setDate(e.target.value)}
           className="border p-2 rounded"
         />
+
         <input
-           type="file"
-           accept="image/*"
+          type="file"
+          accept="image/*"
           onChange={(e) => setImage(e.target.files[0])}
           className="border p-2 rounded"
         />
-        
-       
+
         <button
           type="submit"
-           className="bg-blue-600 text-white p-2 rounded hover:bg-blue-700"
+          disabled={loading}
+          className="bg-blue-600 text-white p-2 rounded hover:bg-blue-700 disabled:opacity-50"
         >
-          Add Trip
+          {loading ? "Adding Trip..." : "Add Trip"}
         </button>
-
       </form>
-
     </div>
   );
 }

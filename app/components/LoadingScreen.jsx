@@ -13,7 +13,7 @@ export default function LoadingScreen({ progress, connected }) {
         <p className="text-gray-500 mb-6">
           {connected
             ? "Loading Travel Mate..."
-            : "Please wait while the backend wakes up."}
+            : "Please wait for a sec your travel comfort matters for us."}
         </p>
 
         <div className="w-full bg-gray-200 rounded-full h-4 overflow-hidden">
