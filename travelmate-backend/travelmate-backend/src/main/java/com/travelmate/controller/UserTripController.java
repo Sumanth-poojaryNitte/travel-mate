@@ -43,10 +43,7 @@ public class UserTripController {
             @RequestParam String to) {
 
         return userTripRepository
-                .findByFromLocationContainingIgnoreCaseAndToLocationContainingIgnoreCase(
-                        from,
-                        to
-                );
+                .findByFromLocationContainingIgnoreCaseAndToLocationContainingIgnoreCase(from, to);
     }
 
     @GetMapping("/{id}")
@@ -61,34 +58,46 @@ public class UserTripController {
     }
 
     @PostMapping("/upload")
-public UserTrip uploadTrip(
-        @RequestParam String name,
-        @RequestParam String mobile,
-        @RequestParam String mail,
-        @RequestParam String fromLocation,
-        @RequestParam String toLocation,
-        @RequestParam String date,
-        @RequestParam(required = false) MultipartFile image
-) throws Exception {
+    public UserTrip uploadTrip(
+            @RequestParam String name,
+            @RequestParam String mobile,
+            @RequestParam String mail,
+            @RequestParam String fromLocation,
+            @RequestParam String toLocation,
+            @RequestParam String date,
+            @RequestParam(required = false) MultipartFile image
+    ) {
 
-    UserTrip trip = new UserTrip();
+        try {
+            UserTrip trip = new UserTrip();
 
-    trip.setName(name);
-    trip.setMobile(mobile);
-    trip.setMail(mail);
-    trip.setFromLocation(fromLocation);
-    trip.setToLocation(toLocation);
-    trip.setDate(date);
+            trip.setName(name);
+            trip.setMobile(mobile);
+            trip.setMail(mail);
+            trip.setFromLocation(fromLocation);
+            trip.setToLocation(toLocation);
+            trip.setDate(date);
 
-    if (image != null && !image.isEmpty()) {
+            if (image != null && !image.isEmpty()) {
 
-        Map uploadResult = cloudinary.uploader().upload(
-                image.getBytes(),
-                ObjectUtils.emptyMap()
-        );
+                Map uploadResult = cloudinary.uploader().upload(
+                        image.getBytes(),
+                        ObjectUtils.emptyMap()
+                );
 
-        trip.setImage(uploadResult.get("secure_url").toString());
+                System.out.println("Cloudinary response: " + uploadResult);
+
+                Object url = uploadResult.get("secure_url");
+                if (url != null) {
+                    trip.setImage(url.toString());
+                }
+            }
+
+            return userTripRepository.save(trip);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new RuntimeException("Trip upload failed: " + e.getMessage());
+        }
     }
-
-    return userTripRepository.save(trip);
 }

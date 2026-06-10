@@ -4,6 +4,7 @@ import MatchCard from "../components/MatchCard";
 import Footer from "../components/Footer";
 import { useSearchParams} from "next/navigation";
 import { useState,useEffect,Suspense } from "react";
+import ServerWakeup from "../components/ServerWakeup";
 
 
 
@@ -17,7 +18,7 @@ import { useState,useEffect,Suspense } from "react";
 
 
   useEffect(() => {
-  fetch("http://localhost:8083/api/trips/all")
+  fetch("https://travel-mate-r3lv.onrender.com/api/trips/all")
     .then((response) => response.json())
     .then((data) => setUsers(data))
     .catch((error) => console.error("Error:", error));
@@ -71,7 +72,7 @@ import { useState,useEffect,Suspense } from "react";
               date={user.date}
               mobile={user.mobile}
               email={user.mail}
-              image={user.image ? `http://localhost:8083/uploads/${user.image}`: null}
+              image={user.image ? `https://travel-mate-r3lv.onrender.com/uploads/${user.image}`: null}
             />
             ))
           ) : (
@@ -95,7 +96,9 @@ import { useState,useEffect,Suspense } from "react";
         <p className="text-xl font-semibold">Loading matches...</p>
       </div>
     }>
+      <ServerWakeup>
       <MatchesContent />
+      </ServerWakeup>
     </Suspense>
   );
 }

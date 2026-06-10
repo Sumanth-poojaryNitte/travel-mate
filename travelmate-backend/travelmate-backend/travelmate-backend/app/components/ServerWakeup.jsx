@@ -11,7 +11,7 @@ export default function ServerWakeup({ children }) {
     const wakeServer = async () => {
       try {
         const response = await fetch(
-          "https://travel-mate-r3lv.onrender.com/api/trips/test"
+          "https://travelmate-backend-t0hu.onrender.com/api/trips/test"
         );
 
         if (response.ok) {

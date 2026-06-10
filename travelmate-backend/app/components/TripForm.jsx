@@ -51,6 +51,8 @@ export default function TripForm() {
         }
       );
 
+      console.log("Status:", response.status);
+
       if (response.ok) {
         alert("Trip added successfully!");
 
@@ -64,7 +66,11 @@ export default function TripForm() {
 
         router.push("/matches");
       } else {
-        alert("Failed to add trip");
+        const errorText = await response.text();
+
+        console.log("Error:", errorText);
+
+        alert(`Error ${response.status}: ${errorText}`);
       }
     } catch (error) {
       console.error("Error:", error);
@@ -143,6 +149,7 @@ export default function TripForm() {
         >
           {loading ? "Adding Trip..." : "Add Trip"}
         </button>
+
       </form>
     </div>
   );
